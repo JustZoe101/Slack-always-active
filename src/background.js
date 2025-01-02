@@ -28,6 +28,8 @@ function stopKeepingActive() {
 
 setInterval(() => {
     chrome.idle.queryState(15, (state) => {
+        console.log("Idle state:", state);
+
         if (state === chrome.idle.IdleState.IDLE) {
             keepActive();
         } else if (state === chrome.idle.IdleState.ACTIVE) {
