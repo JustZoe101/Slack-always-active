@@ -1,0 +1,21 @@
+{
+    "name": "Slack always active",
+    "description": "Keep yourself always active on slack",
+    "version": "1.0",
+    "manifest_version": 3,
+    "permissions": ["activeTab", "tabs", "background", "idle", "scripting"],
+    "host_permissions": ["https://*/*", "http://*/*"],
+    "background": {
+        "service_worker": "./src/background.js"
+    },
+    "content_scripts": [
+        {
+            "matches": ["https://app.slack.com/*"],
+            "js": ["./src/keepActive.js"]
+        }
+    ],
+    "action": {
+        "default_popup": "index.html",
+        "default_icon": "icon.png"
+    }
+}
