@@ -3,7 +3,7 @@
     "description": "Keep yourself always active on slack",
     "version": "1.0",
     "manifest_version": 3,
-    "permissions": ["activeTab", "tabs", "background", "idle", "scripting"],
+    "permissions": ["tabs", "background", "idle", "scripting"],
     "host_permissions": ["https://*/*", "http://*/*"],
     "background": {
         "service_worker": "./src/background.js"
@@ -15,7 +15,10 @@
         }
     ],
     "action": {
-        "default_popup": "index.html",
-        "default_icon": "icon.png"
+        "default_popup": "./index.html"
+    },
+    "icons": {
+        "48": "./icon48.png",
+        "128": "./icon128.png"
     }
 }
