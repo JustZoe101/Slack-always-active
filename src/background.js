@@ -26,14 +26,12 @@ function stopKeepingActive() {
     });
 }
 
-setInterval(() => {
-    chrome.idle.queryState(15, (state) => {
-        console.log("Idle state:", state);
+chrome.idle.onStateChanged.addListener((state) => {
+    console.log("Idle state:", state);
 
-        if (state === chrome.idle.IdleState.IDLE) {
-            keepActive();
-        } else if (state === chrome.idle.IdleState.ACTIVE) {
-            stopKeepingActive();
-        }
-    });
-}, 1000);
+    if (state === "idle") {
+        keepActive();
+    } else if (state === "active") {
+        stopKeepingActive();
+    }
+});
