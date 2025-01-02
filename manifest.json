@@ -3,7 +3,7 @@
     "description": "Keep yourself always active on slack",
     "version": "1.0",
     "manifest_version": 3,
-    "permissions": ["tabs", "background", "idle", "scripting"],
+    "permissions": ["tabs", "background", "idle", "scripting", "storage"],
     "host_permissions": ["https://*/*", "http://*/*"],
     "background": {
         "service_worker": "./src/background.js"

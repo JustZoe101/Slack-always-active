@@ -1,3 +1,11 @@
+let windowInterval = null;
+
+chrome.runtime.onInstalled.addListener(() => {
+    chrome.storage.local.set({ extensionEnabled: false }, () => {
+        console.log("Extension installed and disabled by default.");
+    });
+});
+
 function keepActive() {
     chrome.tabs.query({ url: "*://app.slack.com/*" }, (tabs) => {
         if (tabs.length > 0) {
@@ -7,13 +15,18 @@ function keepActive() {
                     localStorage.setItem("extensionKeepActive", "true");
                 },
             });
-            chrome.windows.update(tabs[0].windowId, { focused: true });
-            chrome.tabs.update(tabs[0].id, { active: true });
+
+            focusWindow(tabs[0]);
+
+            windowInterval = setInterval(() => {
+                focusWindow(tabs[0]);
+            }, 1000 * 60); // 1 minute
         }
     });
 }
 
 function stopKeepingActive() {
+    clearInterval(windowInterval);
     chrome.tabs.query({ url: "*://app.slack.com/*" }, (tabs) => {
         if (tabs.length > 0) {
             chrome.scripting.executeScript({
@@ -26,12 +39,24 @@ function stopKeepingActive() {
     });
 }
 
-chrome.idle.onStateChanged.addListener((state) => {
-    console.log("Idle state:", state);
+function focusWindow(tab) {
+    console.log("Focussing on Slack window.");
+    chrome.windows.update(tab.windowId, { focused: true });
+    chrome.tabs.update(tab.id, { active: true });
+}
 
-    if (state === "idle") {
-        keepActive();
-    } else if (state === "active") {
-        stopKeepingActive();
-    }
+chrome.idle.onStateChanged.addListener((state) => {
+    chrome.storage.local.get("extensionEnabled", (data) => {
+        console.log("Idle state:", state);
+
+        if (!data.extensionEnabled) {
+            return;
+        }
+
+        if (state === chrome.idle.IdleState.IDLE) {
+            keepActive();
+        } else if (state === chrome.idle.IdleState.ACTIVE) {
+            stopKeepingActive();
+        }
+    });
 });
